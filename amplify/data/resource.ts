@@ -27,6 +27,11 @@ const schema = a.schema({
       isActive: a.boolean(),
     })
     .authorization((allow) => [allow.publicApiKey()]),
+    Todo: a
+    .model({
+      content: a.string(),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
