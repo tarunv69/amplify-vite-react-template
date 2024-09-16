@@ -1,0 +1,22 @@
+type Post @model {
+  id: ID! @primaryKey
+  title: String!
+  content: String!
+  author: String!
+  createdAt: String!
+  imageUrl: String
+  isDone: Boolean
+}
+
+type User @model {
+  id: ID! @primaryKey
+  username: String!
+  email: String!
+  isActive: Boolean!
+}
+
+type Todo @model {
+  id: ID! @primaryKey
+  content: String!
+  isDone: Boolean!
+}
