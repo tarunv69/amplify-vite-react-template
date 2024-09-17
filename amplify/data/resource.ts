@@ -1,6 +1,5 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
-
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
 adding a new "isDone" field as a boolean. The authorization rule below
@@ -8,7 +7,7 @@ specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
-  // {{ edit_1 }} Changing Todo model to Post model
+  // Existing Post model
   Post: a
     .model({
       title: a.string(),
@@ -19,16 +18,48 @@ const schema = a.schema({
       imageUrl: a.string(), // {{ edit_1 }} Add imageUrl field
     })
     .authorization((allow) => [allow.publicApiKey()]),
-  
+
+  // Updated DatabaseSchema model
+  DatabaseSchema: a
+    .model({
+      userId: a.id().required(), // Link to user
+      databaseSchemaId: a.id().required(),
+      key: a.string().required(),
+      description: a.string(),
+      schema: a.json().required(),
+      timeFilterField: a.string(),
+      config: a.json(),
+      workspaceId: a.id().required(),
+      user: a.belongsTo("User", ["userId"]),
+      databaseValues:a.hasMany("DatabaseValues", ["databaseValuesId"]),
+    })
+    .identifier(["userId", "databaseSchemaId"]) // Updated identifier
+    .authorization((allow) => [allow.publicApiKey(), allow.custom()]),
+
+  // Updated DatabaseValues model
+  DatabaseValues: a
+    .model({
+      databaseSchemaId: a.id().required(),
+      databaseValuesId: a.id().required(),
+      value: a.json().required(),
+      database:a.belongsTo("DatabaseSchema", ["databaseSchemaId"]),
+    })
+    .identifier(["databaseSchemaId", "databaseValuesId"]) // Updated identifier
+    .authorization((allow) => [allow.publicApiKey(), allow.custom()])
+, // Establish relationship
+
   // User model remains unchanged
   User: a
     .model({
       username: a.string(),
       email: a.string(),
       isActive: a.boolean(),
+      database:a.hasOne("DatabaseSchema", ["databaseSchemaId"]),
     })
     .authorization((allow) => [allow.publicApiKey()]),
-    Todo: a
+
+  // Todo model remains unchanged
+  Todo: a
     .model({
       content: a.string(),
     })
@@ -36,8 +67,6 @@ const schema = a.schema({
 });
 
 export type Schema = ClientSchema<typeof schema>;
-
-
 
 export const data = defineData({
   schema,
