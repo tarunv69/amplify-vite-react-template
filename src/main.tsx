@@ -10,6 +10,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 const client = new ApolloClient({
   uri: 'https://6jse4x4qgzhe5ifhbrfwzikbvi.appsync-api.eu-central-1.amazonaws.com/graphql', 
   cache: new InMemoryCache(),
+  credentials: 'include',
 });
 
 // Configure Amplify
