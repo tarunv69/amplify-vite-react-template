@@ -14,6 +14,7 @@ const schema = a.schema({
       title: a.string(),
       content: a.string(),
       author: a.string(),
+      likes: a.integer(),
       createdAt: a.string(), // or a.date() if you prefer
       imageUrl: a.string(), // {{ edit_1 }} Add imageUrl field
     })
