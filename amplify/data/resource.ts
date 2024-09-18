@@ -7,7 +7,7 @@ specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
-  // Existing Post model
+  // Post model
   Post: a
     .model({
       title: a.string(),
@@ -15,14 +15,13 @@ const schema = a.schema({
       author: a.string(),
       likes: a.integer(),
       createdAt: a.string(), // or a.date() if you prefer
-      imageUrl: a.string(), // {{ edit_1 }} Add imageUrl field
+      imageUrl: a.string(), // New imageUrl field
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
-  // Updated DatabaseSchema model
+  // DatabaseSchema model
   DatabaseSchema: a
     .model({
-      userId: a.id().required(), // Link to user
       databaseSchemaId: a.id().required(),
       key: a.string().required(),
       description: a.string(),
@@ -30,31 +29,32 @@ const schema = a.schema({
       timeFilterField: a.string(),
       config: a.json(),
       workspaceId: a.id().required(),
+      userId: a.id().required(), // Added userId for belongsTo relationship
       user: a.belongsTo("User", ["userId"]),
-      databaseValues:a.hasMany("DatabaseValues", ["databaseValuesId"]),
+      databaseValues: a.hasMany("DatabaseValues", ["databaseSchemaId"]),
     })
-    .identifier(["userId", "databaseSchemaId"]) // Updated identifier
+    .identifier(["databaseSchemaId"])
     .authorization((allow) => [allow.publicApiKey(), allow.custom()]),
 
-  // Updated DatabaseValues model
+  // DatabaseValues model
   DatabaseValues: a
     .model({
       databaseSchemaId: a.id().required(),
       databaseValuesId: a.id().required(),
       value: a.json().required(),
-      database:a.belongsTo("DatabaseSchema", ["databaseSchemaId"]),
+      database: a.belongsTo("DatabaseSchema", ["databaseSchemaId"]),
     })
     .identifier(["databaseSchemaId", "databaseValuesId"]) // Updated identifier
-    .authorization((allow) => [allow.publicApiKey(), allow.custom()])
-, // Establish relationship
+    .authorization((allow) => [allow.publicApiKey(), allow.custom()]),
 
-  // User model remains unchanged
+  // User model
   User: a
     .model({
       username: a.string(),
       email: a.string(),
       isActive: a.boolean(),
-      database:a.hasOne("DatabaseSchema", ["databaseSchemaId"]),
+      databaseSchemaId: a.id(), // Added databaseSchemaId for hasOne relationship
+      database: a.hasOne("DatabaseSchema", ["databaseSchemaId"]),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -65,6 +65,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [allow.publicApiKey()]),
 });
+
 
 export type Schema = ClientSchema<typeof schema>;
 
