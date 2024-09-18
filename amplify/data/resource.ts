@@ -65,14 +65,6 @@ const schema = a.schema({
       content: a.string(),
     })
     .authorization((allow) => [allow.publicApiKey()]),
-
-    firstFunction: a
-    .query()
-    .arguments({
-      name: a.string(),
-    })
-    .returns(a.string())
-
 });
 
 
