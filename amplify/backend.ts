@@ -2,7 +2,7 @@ import { defineBackend } from '@aws-amplify/backend';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
 import { storage } from './storage/resource'
-import { firstFunction } from './functions/first-function/resource'
+
   
 
 import * as iam from "aws-cdk-lib/aws-iam";
@@ -20,7 +20,7 @@ const backend =defineBackend({
   auth,
   data,
   storage,
-  firstFunction
+
 });
 
 
