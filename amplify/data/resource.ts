@@ -54,7 +54,7 @@ const schema = a.schema({
       username: a.string(),
       email: a.string(),
       isActive: a.boolean(),
-      database: a.hasOne("DatabaseSchema", ["databaseSchemaId"]), // Corrected relationship
+      databaseSchema: a.hasOne("DatabaseSchema", ["userId"]), // Corrected relationship
     })
     .identifier(["userId"]) // Make sure to set the identifier
     .authorization((allow) => [allow.publicApiKey()]),
