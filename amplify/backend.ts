@@ -29,7 +29,7 @@ const todoTable = backend.data.resources.cfnResources.amplifyDynamoDbTables["Tod
 
 
 // Update table settings
-todoTable.pointInTimeRecoveryEnabled = true;
+todoTable.pointInTimeRecoveryEnabled = false;
 
 
 todoTable.streamSpecification = {

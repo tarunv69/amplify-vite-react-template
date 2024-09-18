@@ -29,7 +29,7 @@ const schema = a.schema({
       timeFilterField: a.string(),
       config: a.json(),
       workspaceId: a.id().required(),
-      userId: a.id().required(), // Added userId for belongsTo relationship
+      userId: a.id().required(), // This should match the field in User model
       user: a.belongsTo("User", ["userId"]),
       databaseValues: a.hasMany("DatabaseValues", ["databaseSchemaId"]),
     })
@@ -50,12 +50,13 @@ const schema = a.schema({
   // User model
   User: a
     .model({
+      userId: a.id().required(), // Add userId field to match the reference in DatabaseSchema
       username: a.string(),
       email: a.string(),
       isActive: a.boolean(),
-      databaseSchemaId: a.id(), // Added databaseSchemaId for hasOne relationship
-      database: a.hasOne("DatabaseSchema", ["databaseSchemaId"]),
+      database: a.hasOne("DatabaseSchema", ["databaseSchemaId"]), // Corrected relationship
     })
+    .identifier(["userId"]) // Make sure to set the identifier
     .authorization((allow) => [allow.publicApiKey()]),
 
   // Todo model remains unchanged
@@ -65,6 +66,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [allow.publicApiKey()]),
 });
+
 
 
 export type Schema = ClientSchema<typeof schema>;
